@@ -3,9 +3,6 @@ from sentence_transformers import SentenceTransformer, CrossEncoder, util
 import torch
 
 def main(args):
-    # Retrieve and re-rank method:
-    # https://www.sbert.net/examples/applications/retrieve_rerank/README.html
-
     query = args[0]
     corpus_path = args[1]
     embeddings_path = args[2]
@@ -21,23 +18,27 @@ def main(args):
 
     # retrieval
     top_k = 30
-    bi_encoder = SentenceTransformer('sentence-transformers/msmarco-distilbert-cos-v5')
+    bi_encoder = SentenceTransformer('msmarco-distilbert-base-v4')
     query_embedding = bi_encoder.encode(query, convert_to_tensor=True)
     hits = util.semantic_search(query_embedding, corpus_embeddings, top_k=top_k)
     hits = hits[0]
+    rank_by = 'score'
+    ranked = sorted(hits, key=lambda hit: hit[rank_by], reverse=True)
 
     # ranking
-    cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+    # https://www.sbert.net/examples/applications/retrieve_rerank/README.html
+    cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2')
     ranking_inputs = [(query, texts[hit['corpus_id']]) for hit in hits]
     scores = cross_encoder.predict(ranking_inputs)
     for idx, score in enumerate(scores):
         hits[idx]['cross_score'] = score
-    ranked = sorted(hits, key=lambda hit: hit['cross_score'], reverse=True)
+    rank_by = 'cross_score'
+    ranked = sorted(hits, key=lambda hit: hit[rank_by], reverse=True)
 
     print('-' * 80)
     for hit in ranked[:3]:
         idx = hit['corpus_id']
-        print(idx, "(Score: {:.4f})".format(hit['cross_score']))
+        print(idx, "(Score: {:.4f})".format(hit[rank_by]))
         print(texts[idx])
 
 

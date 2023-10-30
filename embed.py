@@ -13,7 +13,12 @@ def main(args):
              for book in work['books']
              for chapter in book['chapters']]
 
-    model = SentenceTransformer('sentence-transformers/msmarco-distilbert-cos-v5')
+    model = SentenceTransformer('msmarco-distilbert-base-v4')
+    model.max_seq_length = 512
+    print('max sequence length:', model.max_seq_length)
+    too_long = len([text for text in texts if len(text) > model.max_seq_length])
+    if too_long > 0:
+        print(f'WARNING: {too_long} (of {len(texts)}) texts are longer than max sequence length')
     corpus_embeddings = model.encode(texts, convert_to_tensor=True)
     torch.save(corpus_embeddings, output_path)
 
