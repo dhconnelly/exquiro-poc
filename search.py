@@ -3,6 +3,9 @@ from sentence_transformers import SentenceTransformer, CrossEncoder, util
 import torch
 
 def main(args):
+    # Retrieve and re-rank method:
+    # https://www.sbert.net/examples/applications/retrieve_rerank/README.html
+
     query = args[0]
     corpus_path = args[1]
     embeddings_path = args[2]
