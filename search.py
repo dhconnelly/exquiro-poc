@@ -19,14 +19,12 @@ def main(args):
              for chapter in book['chapters']]
 
     # retrieval
-    top_k = 30
+    top_k = 100
     bi_encoder = SentenceTransformer('msmarco-distilbert-base-v4', device=device)
     bi_encoder.max_seq_length = 512
     query_embedding = bi_encoder.encode(query, convert_to_tensor=True)
     hits = util.semantic_search(query_embedding, corpus_embeddings, top_k=top_k)
     hits = hits[0]
-    rank_by = 'score'
-    ranked = sorted(hits, key=lambda hit: hit[rank_by])
 
     # ranking
     # https://www.sbert.net/examples/applications/retrieve_rerank/README.html
