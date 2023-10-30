@@ -2,6 +2,8 @@ import json
 from sentence_transformers import SentenceTransformer, CrossEncoder, util
 import torch
 
+device = torch.device('mps')
+
 def main(args):
     query = args[0]
     corpus_path = args[1]
@@ -18,16 +20,17 @@ def main(args):
 
     # retrieval
     top_k = 30
-    bi_encoder = SentenceTransformer('msmarco-distilbert-base-v4')
+    bi_encoder = SentenceTransformer('msmarco-distilbert-base-v4', device=device)
+    bi_encoder.max_seq_length = 512
     query_embedding = bi_encoder.encode(query, convert_to_tensor=True)
     hits = util.semantic_search(query_embedding, corpus_embeddings, top_k=top_k)
     hits = hits[0]
     rank_by = 'score'
-    ranked = sorted(hits, key=lambda hit: hit[rank_by], reverse=True)
+    ranked = sorted(hits, key=lambda hit: hit[rank_by])
 
     # ranking
     # https://www.sbert.net/examples/applications/retrieve_rerank/README.html
-    cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2')
+    cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2', device=device)
     ranking_inputs = [(query, texts[hit['corpus_id']]) for hit in hits]
     scores = cross_encoder.predict(ranking_inputs)
     for idx, score in enumerate(scores):

@@ -75,7 +75,7 @@ def clean(elem):
     etree.strip_tags(elem, 'emph')
     for section in elem.iterfind('.//milestone[@unit="alternatesection"]'):
         section.tag = 'section'
-    for section in elem.iterfind('.//milestone[@unit="section"]'):
+    for section in elem.iterfind('.//milestone[@unit="chapter"]'):
         section.tag = 'section'
     etree.strip_tags(elem, 'section')
 
