@@ -14,5 +14,7 @@
     # generate embeddings
     python embed.py corpus.json corpus.embed
 
-    # issue a query
-    python search.py "should i engage in politics" corpus.json corpus.embed
+    # start the search server
+    python search.py corpus.json corpus.embed
+
+    # now open http://127.0.0.1:5000 and make some queries :)
