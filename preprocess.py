@@ -1,8 +1,17 @@
 from lxml import etree
 import json
+import re
+
+EXTRA_SPACES = re.compile(r'\s+')
+
+def format_text(text):
+    text = text.strip()
+    text = text.replace('\n', ' ')
+    text = EXTRA_SPACES.sub(' ', text)
+    return text
 
 def extract_book(book):
-    name = book.find('head').text
+    name = book.find('.//head')
     it = book.iterfind('*')
     next(it)
     for child in it:
@@ -10,14 +19,14 @@ def extract_book(book):
     it = book.iterfind('*')
     next(it)
     return {
-        'name': name,
-        'chapters': [child.tail for child in it],
+        'name': name.text if name is not None else '',
+        'chapters': [format_text(child.tail) for child in it],
     }
 
 def extract_work(doc):
-    title = doc.find('.//title[@type="work"]').text
+    title = doc.find('.//title').text
     author = doc.find('.//author').text
-    books = doc.iterfind('.//div1[@type="book"]')
+    books = doc.iterfind('.//div1')
     return {
         'title': title,
         'author': author,
@@ -29,9 +38,14 @@ def clean(elem):
     etree.strip_elements(elem, 'note', with_tail=False)
     etree.strip_elements(elem, 'pb', with_tail=False)
     etree.strip_elements(elem, 'pb', with_tail=False)
+    etree.strip_elements(elem, 'argument', with_tail=False)
     etree.strip_tags(elem, 'p')
+    etree.strip_tags(elem, 'gap')
     etree.strip_tags(elem, 'l')
     etree.strip_tags(elem, 'foreign')
+    etree.strip_tags(elem, 'persName')
+    etree.strip_tags(elem, 'placeName')
+    etree.strip_tags(elem, 'surname')
     etree.strip_tags(elem, 'quote')
     etree.strip_tags(elem, 'hi')
     for section in elem.iterfind('.//milestone[@unit="alternatesection"]'):
@@ -43,14 +57,15 @@ def clean(elem):
 def parse(filename):
     parser = etree.XMLParser(dtd_validation=True, no_network=False)
     tree = etree.parse(filename, parser=parser)
-    return tree.getroot()
+    root = tree.getroot()
+    clean(root)
+    return root
 
 def main(args):
-    input_path = args[0]
-    output_path = args[1]
-    root = parse(input_path)
-    clean(root)
-    data = [extract_work(root)]
+    output_path = args[0]
+    input_paths = args[1:]
+    print(f"preprocessing to {output_path}: {input_paths}")
+    data = [extract_work(parse(path)) for path in input_paths]
     with open(output_path, 'w') as f:
         json.dump(data, f, indent=4)
 

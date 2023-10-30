@@ -9,10 +9,10 @@
 ## usage
 
     # preprocess corpus
-    python preprocess.py corpus/cicero.xml cicero.json
+    python preprocess.py corpus.json corpus/*
 
     # generate embeddings
-    python embed.py cicero.json cicero.embed
+    python embed.py corpus.json corpus.embed
 
     # issue a query
-    python search.py "should i engage in politics" cicero.json cicero.embed
+    python search.py "should i engage in politics" corpus.json corpus.embed
