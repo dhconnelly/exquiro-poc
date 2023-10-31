@@ -21,15 +21,19 @@ texts = [(chapter, work, book)
 with open('index.html') as f:
     index = f.read()
 
-top_k = 100
-bi_encoder = SentenceTransformer('msmarco-distilbert-base-v4', device=device)
+top_k = 30
+bi_encoder = SentenceTransformer('msmarco-distilbert-base-tas-b', device=device)
 bi_encoder.max_seq_length = 512
 cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-12-v2', device=device)
 
 def search(query):
     # retrieval
     query_embedding = bi_encoder.encode(query, convert_to_tensor=True)
-    hits = util.semantic_search(query_embedding, corpus_embeddings, top_k=top_k)
+    query_embedding = query_embedding.to(device)
+    query_embedding = torch.nn.functional.normalize(query_embedding, dim=-1)
+    hits = util.semantic_search(
+            query_embedding, corpus_embeddings,
+            top_k=top_k, score_function=util.dot_score)
     hits = hits[0]
 
     # ranking
