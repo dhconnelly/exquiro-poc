@@ -9,8 +9,11 @@ embeddings_path = sys.argv[2]
 
 device = torch.device('mps')
 
+print('loading corpus...')
 with open(corpus_path) as f:
     corpus = json.load(f)
+
+print('loading embeddings...')
 with open(embeddings_path) as f:
     corpus_embeddings = torch.load(embeddings_path)
 texts = [(chapter, work, book)
@@ -18,6 +21,7 @@ texts = [(chapter, work, book)
          for book in work['books']
          for chapter in book['chapters']]
 
+print('loading static site...')
 with open('index.html') as f:
     index = f.read()
 
@@ -71,4 +75,5 @@ def hello():
         return rendered_results
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    print('starting search service at http://127.0.0.1:8080/search')
+    app.run(debug=True, port=8080)
