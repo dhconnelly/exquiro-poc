@@ -52,6 +52,7 @@ def clean(elem):
     etree.strip_elements(elem, 'opener', with_tail=False)
     etree.strip_elements(elem, 'figure', with_tail=False)
     etree.strip_tags(elem, 'p')
+    etree.strip_tags(elem, 'corr')
     etree.strip_tags(elem, 'salute')
     etree.strip_tags(elem, 'text')
     etree.strip_tags(elem, 'div2')
@@ -74,10 +75,12 @@ def clean(elem):
     etree.strip_tags(elem, 'hi')
     etree.strip_tags(elem, 'emph')
     for section in elem.iterfind('.//milestone[@unit="alternatesection"]'):
-        section.tag = 'section'
+        section.tag = 'REMOVE'
     for section in elem.iterfind('.//milestone[@unit="chapter"]'):
-        section.tag = 'section'
-    etree.strip_tags(elem, 'section')
+        section.tag = 'REMOVE'
+    for section in elem.iterfind('.//milestone[@unit="line"]'):
+        section.tag = 'REMOVE'
+    etree.strip_tags(elem, 'REMOVE')
 
 def parse(filename):
     parser = etree.XMLParser(dtd_validation=False, no_network=False)
