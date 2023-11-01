@@ -5,8 +5,8 @@ import torch
 device = torch.device('mps')
 
 def main(args):
-    input_path = args[0]
-    output_path = args[1]
+    output_path = args[0]
+    input_path = args[1]
     print(f'embedding from {input_path} to {output_path}')
     with open(input_path) as f:
         corpus = json.load(f)
