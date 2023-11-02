@@ -21,11 +21,11 @@ The project was inspired by the description of embedding-based semantic search a
 
 ## results
 
-The search quality isn't fantastic right now, but it is clearly doing *something*, and for the given task I think it's doing better than existing tools. Using the texts in `corpus` -- Homer's Iliad and Odyssey as well as Cicero's letters, orations, On Duties, On Friendship, On Old Age, -- the top result for [[meaning of life]] is this passage:
+The search quality isn't fantastic right now, but it is clearly doing *something*, and for the given task I think it's doing better than existing tools. Using the texts in `corpus` -- Homer's Iliad and Odyssey as well as Cicero's letters, orations, On Duties, On Friendship, On Old Age, -- the top result for [meaning of life] is this passage:
 
 > It will be our duty, then, not to listen to those besotted men of pleasure when they argue about friendship, of which they understand neither the practice nor the theory. For what person is there, in the name of gods and men! who would wish to be surrounded by unlimited wealth and to abound in every material blessing, on condition that he love no one and that no one love him? Such indeed is the life of tyrants—a life, I mean, in which there can be no faith, no affection, no trust in the continuance of goodwill; where every act arouses suspicion and anxiety and where friendship has no place.
 
-and all of the results for [[how did achilles kill hector]] are reasonable. There's still work to be done of course, and I'm working on a production version now. More to come :)
+and all of the results for [how did achilles kill hector] are reasonable. There's still work to be done of course, and I'm working on a production version now. More to come :)
 
 ## getting started
 
