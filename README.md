@@ -29,6 +29,8 @@ and all of the results for [how did achilles kill hector] are reasonable. There'
 
 ## getting started
 
+only supports mac os with apple silicon atm. see TODOs above
+
 you need python3. then:
 
     python -m venv venv
